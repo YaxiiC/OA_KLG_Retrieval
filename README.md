@@ -115,53 +115,6 @@ OA_KLG_Retrieval/
 └── training_logs/
 ```
 
-### Usage
-
-#### 1. Environment Setup
-```bash
-conda env create -f environment.yml
-conda activate oa_klg_topk
-```
-
-#### 2. Train (Subset Retrieval)
-```powershell
-python train_joint_scoring_kl.py `
-    --images-tr "C:\Users\chris\MICCAI2026\nnUNet\nnUNet_raw\Dataset360_oaizib\imagesTr" `
-    --radiomics-train-csv "C:\Users\chris\MICCAI2026\OA_KLG_Retrieval\output_train\radiomics_results_wide.csv" `
-    --klgrade-train-csv "C:\Users\chris\MICCAI2026\OA_KLG_Retrieval\subInfo_train.xlsx" `
-    --outdir "training_logs_subset" `
-    --k 15 `
-    --n-subsets 32 `
-    --top-m 4 `
-    --pool-size 320 `
-    --warmup-epochs 20 `
-    --epochs 200 `
-    --lambda-rank 0.1 `
-    --exploration-ratio 0.2
-```
-
-#### 3. Inference (Budgeted Retrieval)
-```powershell
-python infer_budgeted_retrieval.py `
-    --images-ts "C:\Users\chris\MICCAI2026\nnUNet\nnUNet_raw\Dataset360_oaizib\imagesTs" `
-    --radiomics-test-csv "C:\Users\chris\MICCAI2026\OA_KLG_Retrieval\output_test\radiomics_results_wide.csv" `
-    --checkpoint "training_logs_subset\checkpoints\best.pth" `
-    --scaler "training_logs_subset\checkpoints\scaler.joblib" `
-    --outdir "inference_subset"
-```
-
-### Key Hyperparameters
-
-- `--k`: subset size K
-- `--n-subsets`: number of subsets for probe supervision
-- `--top-m`: number of top subsets for classifier training
-- `--pool-size`: candidate pool size after warmup
-- `--warmup-epochs`: warmup epochs T
-- `--lambda-rank`: weight for scorer ranking loss
-- `--exploration-ratio`: fraction of random subsets after warmup
-- `--probe-support`, `--probe-query`, `--probe-steps`, `--probe-lr`
-- `--label-mode`: `multiclass` (KL 0-4) or `binary_oa` (0/1→non-OA, 2/3/4→OA)
-
 ### Output Files
 
 #### Training Metrics (`logs/metrics.csv`)
